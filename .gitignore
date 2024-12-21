@@ -1,0 +1,27 @@
+# Ignore binary files
+bin/*
+!bin/.gitkeep
+
+# Ignore object files
+*.o
+
+# Ignore dependency files
+*.d
+
+# Ignore build directories
+obj/
+BUILDDIR/
+
+# Ignore compiled libraries
+libft/*.o
+libft/*.a
+
+# Ignore VSCode settings
+.vscode/
+
+# Ignore temporary files
+*.tmp
+*.log
+
+# Ignore backup files
+*~
