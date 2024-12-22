@@ -56,7 +56,7 @@ jobs:
 
     - name: Build Bonus
       run: |
-        make bonus
+        make
         make clean
 
     - name: Test Bonus Features
