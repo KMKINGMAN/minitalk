@@ -6,8 +6,10 @@ ifeq ($(shell uname -s),Darwin)
 endif
 
 #The Target Binary Program
-TARGET				:= minitalk
-TARGET_BONUS		:= minitalk-bonus
+TARGET				:= client
+TARGET_BONUS		:= client_bonus
+TARGET_SERVER		:= server
+TARGET_SERVER_BONUS	:= server_bonus
 
 BUILD				:= release
 
@@ -35,12 +37,12 @@ cflags.debug		:= -Wall -Werror -Wextra -DDEBUG -ggdb -fsanitize=address -fno-omi
 CFLAGS				:= $(cflags.$(BUILD))
 CPPFLAGS			:= $(cflags.$(BUILD))
 
-lib.release			:=  -Llibft -lft
+lib.release			 := -Llibft -lft -Lgc_collector -lcollect
 lib.valgrind		:= $(lib.release)
 lib.debug			:= $(lib.release) -fsanitize=address -fno-omit-frame-pointer
 LIB					:= $(lib.$(BUILD))
 
-INC					:= -I$(INCDIR) -I/usr/local/include
+INC					:= -I$(INCDIR) -I/usr/local/include -Igc_collector
 INCDEP				:= -I$(INCDIR)
 
 # Colors
@@ -59,7 +61,7 @@ GREP				:= grep --color=auto --exclude-dir=.git
 NORMINETTE			:= norminette `ls`
 
 # Default Make
-all: libft $(TARGETDIR)/$(TARGET) $(TARGETDIR)/server
+all: libft $(TARGETDIR)/$(TARGET) $(TARGETDIR)/$(TARGET_SERVER)
 	@$(ERASE)
 	@$(ECHO) "$(TARGET)\t\t[$(C_SUCCESS)✅$(C_RESET)]"
 	@$(ECHO) "$(C_SUCCESS)All done, compilation successful! 👌 $(C_RESET)"
@@ -76,16 +78,17 @@ re: fclean all
 
 # Clean only Objects
 clean:
-	@$(RM) -f *.d *.o
 	@$(RM) -rf $(BUILDDIR)
+	@$(RM) -f $(OBJECTS) $(OBJECTS_BONUS) $(OBJECTS_SERVER) $(OBJECTS_SERVER_BONUS)
+	@$(RM) -f $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
 	@make $@ -C libft
-
+	@make $@ -C gc_collector
 
 # Full Clean, Objects and Binaries
 fclean: clean
 	@$(RM) -rf $(TARGETDIR)
 	@make $@ -C libft
-
+	@make $@ -C gc_collector
 
 # Pull in dependency info for *existing* .o files
 -include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
@@ -102,12 +105,12 @@ $(TARGETDIR)/$(TARGET_BONUS): $(OBJECTS_BONUS)
 
 
 # Link the server
-$(TARGETDIR)/server: $(OBJECTS_SERVER)
+$(TARGETDIR)/$(TARGET_SERVER): $(OBJECTS_SERVER)
 	@mkdir -p $(TARGETDIR)
 	$(CC) -o $(TARGETDIR)/server $^ $(LIB)
 
 #Link the server bonus
-$(TARGETDIR)/server-bonus: $(OBJECTS_SERVER_BONUS)
+$(TARGETDIR)/$(TARGET_SERVER_BONUS): $(OBJECTS_SERVER_BONUS)
 	@mkdir -p $(TARGETDIR)
 	$(CC) -o $(TARGETDIR)/server-bonus $^ $(LIB)
 
@@ -129,6 +132,7 @@ $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 
 libft:
 	@make -C libft
+	@make -C gc_collector
 
 
 norm:

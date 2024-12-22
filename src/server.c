@@ -6,14 +6,12 @@
 /*   By: mkurkar <mkurkar@student.42amman.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 16:07:59 by mkurkar           #+#    #+#             */
-/*   Updated: 2024/12/22 18:04:45 by mkurkar          ###   ########.fr       */
+/*   Updated: 2024/12/22 18:33:18 by mkurkar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../gc_collector/g_collector.h"
 #include "./../includes/minitalk.h"
-#include <signal.h>
-#include <stdio.h>
 
 int		g_received_bit = 0;
 
@@ -35,8 +33,9 @@ void	process_message(t_message **head, t_message **current,
 	(*current)->index = (*current)->index + 1;
 	if ((*current)->buff == 0)
 	{
+		write(STDOUT_FILENO, (*current)->message, (*current)->index);
+		write(STDOUT_FILENO, "\n", 1);
 		(*current)->active = 0;
-		printf("%s", (*current)->message);
 		remove_message(head, siginfo->si_pid);
 		(*current) = NULL;
 		kill(siginfo->si_pid, SIGUSR1);

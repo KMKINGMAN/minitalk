@@ -6,7 +6,7 @@
 /*   By: mkurkar <mkurkar@student.42amman.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 16:16:36 by mkurkar           #+#    #+#             */
-/*   Updated: 2024/12/22 18:04:23 by mkurkar          ###   ########.fr       */
+/*   Updated: 2024/12/22 18:22:32 by mkurkar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <signal.h>
 # include <unistd.h>
 # include <stdlib.h>
+#include <stdio.h>
 # include "../libft/libft.h"
 
 # ifndef BUFFER_SIZE

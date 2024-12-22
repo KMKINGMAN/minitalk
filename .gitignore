@@ -15,6 +15,8 @@ BUILDDIR/
 # Ignore compiled libraries
 libft/*.o
 libft/*.a
+*/*.o
+*/*.a
 
 # Ignore VSCode settings
 .vscode/
