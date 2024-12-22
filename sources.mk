@@ -11,6 +11,7 @@ SOURCES		+=           		\
 
 SOURCES_SERVER +=           		\
 		src/server.c        	\
+		src/server_utils.c         	\
 		src/client_utils.c         	\
 		gc_collector/g_collector.c  gc_collector/g_collector_utils.c\
 

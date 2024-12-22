@@ -26,7 +26,7 @@ void	send_bit(int pid, char bit)
 	int				i_bit;
 
 	i_bit = 8;
-	temp = (unsigned char) bit;
+	temp = (unsigned char)bit;
 	while (i_bit--)
 	{
 		g_sending = 0;
@@ -65,7 +65,6 @@ void	sig_handler(void)
 		(write(1, "Error\n", 6));
 }
 
-
 int	main(int argc, char **argv)
 {
 	int	pid;
@@ -83,4 +82,3 @@ int	main(int argc, char **argv)
 	send_message(pid, argv[2]);
 	return (0);
 }
-
