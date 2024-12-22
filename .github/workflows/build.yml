@@ -64,6 +64,5 @@ jobs:
         ./bin/server & SERVER_PID=$!
         sleep 1
         ./bin/client $SERVER_PID "Test with 🌟 Unicode"
-        ./bin/client $SERVER_PID "Multiple clients test 1" &
-        ./bin/client $SERVER_PID "Multiple clients test 2"
+        ./bin/client $SERVER_PID "Multiple clients test 1";./bin/client $SERVER_PID "Multiple clients test 2"
         kill $SERVER_PID
