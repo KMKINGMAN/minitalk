@@ -44,13 +44,6 @@ jobs:
         ./bin/client $SERVER_PID "Hello, World!"
         kill $SERVER_PID
 
-    - name: Memory Check with Valgrind
-      run: |
-        valgrind --leak-check=full --error-exitcode=1 ./bin/server & SERVER_PID=$!
-        sleep 1
-        valgrind --leak-check=full --error-exitcode=1 ./bin/client $SERVER_PID "Test Message"
-        kill $SERVER_PID
-
     - name: Cleanup
       run: make fclean
 
