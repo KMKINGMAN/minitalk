@@ -1,52 +1,85 @@
 NAME		:= libcollect.a
 CC			:= cc
-CFLAGS		:= -Wall -Wextra -Werror -I../libft
+CFLAGS		:= -Wall -Wextra -Werror
+BUILD		:= release
+
+# Build type specific flags
+cflags.release	:= -O2
+cflags.debug	:= -g3 -DDEBUG
+cflags.sanitize	:= -g3 -fsanitize=address -DDEBUG
 
 # Directories
 SRCDIR		:= .
 OBJDIR		:= obj
+DEPDIR		:= $(OBJDIR)/.deps
 
 # Source files
 SRCS		:= g_collector.c g_collector_utils.c
 OBJS		:= $(SRCS:%.c=$(OBJDIR)/%.o)
+DEPS		:= $(SRCS:%.c=$(DEPDIR)/%.d)
 
-# Colors
-C_RESET		:= \033[0m
-C_PENDING	:= \033[0;36m
-C_SUCCESS	:= \033[0;32m
+# Include paths - remove libft
+INCLUDES	:= -I.
+
+# Colors and formatting
+BLUE		:= \033[34m
+GREEN		:= \033[32m
+YELLOW		:= \033[33m
+RESET		:= \033[0m
+BOLD		:= \033[1m
 
 # Default target
-all: $(NAME)
+all: banner $(NAME)
 
-# Create object directory
-$(OBJDIR):
-	@mkdir -p $(OBJDIR)
+# Pretty output
+banner:
+	@printf "$(BLUE)$(BOLD)Building $(NAME) [$(BUILD) mode]$(RESET)\n"
 
-# Compile source files
-$(OBJDIR)/%.o: %.c
-	@echo "$(NAME)\t\t[$(C_PENDING)⏳$(C_RESET)]"
-	@$(CC) $(CFLAGS) -c $< -o $@
-	@echo "\033[1A\033[K"
+# Create directories
+$(OBJDIR) $(DEPDIR):
+	@mkdir -p $@
 
-# Create library - modified to include libft objects
-$(NAME): $(OBJDIR) $(OBJS)
-	@make -C ../libft
-	@cp ../libft/libft.a $(NAME)
+# Dependency generation
+$(DEPDIR)/%.d: %.c | $(DEPDIR)
+	@printf "$(YELLOW)Generating dependencies for $<$(RESET)\n"
+	@$(CC) $(CFLAGS) $(INCLUDES) -MM $< -MT '$(OBJDIR)/$*.o' > $@
+
+# Compilation
+$(OBJDIR)/%.o: %.c $(DEPDIR)/%.d | $(OBJDIR)
+	@printf "$(YELLOW)Compiling $<$(RESET)\n"
+	@$(CC) $(CFLAGS) $(cflags.$(BUILD)) $(INCLUDES) -c $< -o $@
+
+# Library creation - remove libft
+$(NAME): $(OBJS)
 	@ar rcs $(NAME) $(OBJS)
-	@echo "$(NAME)\t\t[$(C_SUCCESS)✅$(C_RESET)]"
+	@printf "$(GREEN)$(BOLD)$(NAME) built successfully!$(RESET)\n"
 
-# Clean object files - more specific cleaning
+# Include dependencies
+-include $(DEPS)
+
+# Debug build
+debug: BUILD := debug
+debug: all
+
+# Sanitize build
+sanitize: BUILD := sanitize
+sanitize: all
+
+# Clean rules - remove libft
 clean:
-	@$(RM) -rf $(OBJDIR)
-	@$(RM) -f $(OBJS)
-	@make -C ../libft clean
+	@rm -rf $(OBJDIR)
+	@printf "$(BLUE)Cleaned object files$(RESET)\n"
 
-# Clean everything
 fclean: clean
 	@rm -f $(NAME)
-	@make -C ../libft fclean
+	@printf "$(BLUE)Cleaned $(NAME)$(RESET)\n"
 
 # Rebuild
 re: fclean all
 
-.PHONY: all clean fclean re
+# Development tools
+norm:
+	@norminette $(SRCS) *.h
+
+.PHONY: all clean fclean re debug sanitize banner norm
+.SILENT: banner

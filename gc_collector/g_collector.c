@@ -6,11 +6,10 @@
 /*   By: mkurkar <mkurkar@student.42amman.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:39:02 by mkurkar           #+#    #+#             */
-/*   Updated: 2024/12/21 15:00:44 by mkurkar          ###   ########.fr       */
+/*   Updated: 2024/12/22 19:14:52 by mkurkar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft/libft.h"
 #include "g_collector.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,7 +52,6 @@ void	gc_free(void *ptr)
 {
 	t_memory_block	**current;
 	t_memory_block	*temp;
-	
 
 	current = gc_init(GC_GETDATA);
 	while (*current)
