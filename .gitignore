@@ -27,3 +27,5 @@ libft/*.a
 
 # Ignore backup files
 *~
+# for the LICENSE
+LICENSE
