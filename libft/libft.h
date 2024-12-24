@@ -6,7 +6,7 @@
 /*   By: mkurkar <mkurkar@student.42amman.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 15:11:07 by mkurkar           #+#    #+#             */
-/*   Updated: 2024/12/20 16:16:49 by mkurkar          ###   ########.fr       */
+/*   Updated: 2024/12/24 13:38:23 by mkurkar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define LIBFT_H
 
 # include <stddef.h>
+# include <unistd.h>
 # include <stdlib.h>
 
 void				*ft_memset(void *b, int c, unsigned int len);

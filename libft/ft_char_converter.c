@@ -1,29 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcmp.c                                        :+:      :+:    :+:   */
+/*   ft_char_converter.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkurkar <mkurkar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/27 23:01:46 by mkurkar           #+#    #+#             */
-/*   Updated: 2024/08/31 12:53:15 by mkurkar          ###   ########.fr       */
+/*   Created: 2024/12/24 12:55:39 by mkurkar           #+#    #+#             */
+/*   Updated: 2024/12/24 12:56:05 by mkurkar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_memcmp(const void *s1, const void *s2, unsigned int n)
+int	ft_tolower(int c)
 {
-	unsigned char	*str1;
-	unsigned char	*str2;
-	size_t			i;
+	if (c >= 'A' && c <= 'Z')
+		return (c + 32);
+	return (c);
+}
 
-	str1 = (unsigned char *)s1;
-	str2 = (unsigned char *)s2;
-	i = 0;
-	if (n == 0)
-		return (0);
-	while (i < n - 1 && str1[i] == str2[i])
-		i++;
-	return (str1[i] - str2[i]);
+int	ft_toupper(int c)
+{
+	if (c >= 'a' && c <= 'z')
+		return (c - 32);
+	return (c);
 }

@@ -6,84 +6,117 @@
 #    By: mkurkar <mkurkar@student.42amman.com>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/28 22:42:29 by mkurkar           #+#    #+#              #
-#    Updated: 2024/12/20 16:20:26 by mkurkar          ###   ########.fr        #
+#    Updated: 2024/12/24 13:43:17 by mkurkar          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC := cc
+NAME		:= libft.a
+CC			:= cc
+BUILD		:= release
 
-CFLAGS := -Wall -Wextra -Werror -g3
+# Build type specific flags
+cflags.release	:= -Wall -Wextra -Werror
+cflags.debug	:= -Wall -Wextra -Werror -g3 -DDEBUG
+cflags.sanitize	:= -Wall -Wextra -Werror -g3 -fsanitize=address -DDEBUG
+CFLAGS			:= $(cflags.$(BUILD))
 
-SRCS := ft_atoi.c \
-		ft_bzero.c \
-		ft_calloc.c \
-		ft_isalnum.c \
-		ft_isalpha.c \
-		ft_isascii.c \
-		ft_isdigit.c \
-		ft_isprint.c \
-		ft_itoa.c \
-		ft_memchr.c \
-		ft_memcmp.c \
-		ft_memcpy.c \
-		ft_memmove.c \
-		ft_memset.c \
-		ft_putchar_fd.c \
-		ft_putendl_fd.c \
-		ft_putnbr_fd.c \
-		ft_putstr_fd.c \
-		ft_split.c \
-		ft_strchr.c \
-		ft_strdup.c \
-		ft_striteri.c \
-		ft_strjoin.c \
-		ft_strlcat.c \
-		ft_strlcpy.c \
-		ft_strlen.c \
-		ft_strmapi.c \
-		ft_strncmp.c \
-		ft_strnstr.c \
-		ft_strrchr.c \
-		ft_strtrim.c \
-		ft_substr.c \
-		ft_tolower.c \
-		ft_toupper.c \
-		ft_realloc.c
+# Directories
+SRCDIR		:= .
+OBJDIR		:= obj
+DEPDIR		:= $(OBJDIR)/.deps
 
-SRCSBONUS := ft_lstadd_back.c \
-		ft_lstadd_front.c \
-		ft_lstclear.c \
-		ft_lstdelone.c \
-		ft_lstiter.c \
-		ft_lstlast.c \
-		ft_lstmap.c \
-		ft_lstnew.c \
-		ft_lstsize.c
+# Source files
+SRCS		:= ft_boolean_string.c \
+			   ft_itoa.c \
+			   ft_put_fd.c \
+			   ft_string_method_2.c \
+			   ft_striter.c \
+			   ft_allocations.c \
+			   ft_char_converter.c \
+			   ft_memory.c \
+			   ft_split.c \
+			   ft_string_method.c
 
-BONUS_OBJS = $(SRCSBONUS:.c=.o)
+# Bonus sources
+BONUS_SRCS	:= ft_lists.c \
+			   ft_lists_controller.c
 
-OBJS := $(SRCS:.c=.o)
+# Objects and dependencies
+OBJS		:= $(SRCS:%.c=$(OBJDIR)/%.o)
+DEPS		:= $(SRCS:%.c=$(DEPDIR)/%.d)
+BONUS_OBJS	:= $(BONUS_SRCS:%.c=$(OBJDIR)/%.o)
+BONUS_DEPS	:= $(BONUS_SRCS:%.c=$(DEPDIR)/%.d)
 
-NAME := libft.a
+# Colors and formatting
+BLUE		:= \033[34m
+GREEN		:= \033[32m
+YELLOW		:= \033[33m
+RESET		:= \033[0m
+BOLD		:= \033[1m
 
-HEADER := libft.h
+# Default target
+all: banner $(NAME)
 
-all: $(NAME)
+# Pretty output
+banner:
+	@printf "$(BLUE)$(BOLD)Building $(NAME) [$(BUILD) mode]$(RESET)\n"
 
-%.o: %.c $(HEADER)
-	$(CC) $(CFLAGS) -c $< -o $@
+# Create directories
+$(OBJDIR) $(DEPDIR):
+	@mkdir -p $@
 
+# Dependency generation
+$(DEPDIR)/%.d: %.c | $(DEPDIR)
+	@printf "$(YELLOW)Generating dependencies for $<$(RESET)\n"
+	@$(CC) $(CFLAGS) -MM $< -MT '$(OBJDIR)/$*.o' > $@
+
+# Compilation with progress indicator
+$(OBJDIR)/%.o: %.c $(DEPDIR)/%.d | $(OBJDIR)
+	@printf "$(YELLOW)Compiling $<$(RESET)\n"
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+# Library creation with status
 $(NAME): $(OBJS)
-	ar rcs $@ $^
+	@ar rcs $(NAME) $(OBJS)
+	@printf "$(GREEN)$(BOLD)$(NAME) built successfully!$(RESET)\n"
+
+# Include dependencies
+-include $(DEPS) $(BONUS_DEPS)
+
+# Bonus target
+bonus: OBJS += $(BONUS_OBJS)
+bonus: DEPS += $(BONUS_DEPS)
+bonus: banner $(NAME)
+
+# Debug build
+debug: BUILD := debug
+debug: all
+
+# Sanitize build
+sanitize: BUILD := sanitize
+sanitize: all
+
+# Clean rules with status messages
 clean:
-	rm -f $(OBJS)
+	@rm -rf $(OBJDIR)
+	@printf "$(BLUE)Cleaned object files$(RESET)\n"
 
 fclean: clean
-	rm -f $(NAME) $(BONUS_OBJS)
+	@rm -f $(NAME)
+	@printf "$(BLUE)Cleaned $(NAME)$(RESET)\n"
 
+# Rebuild
 re: fclean all
 
-bonus: $(OBJS) $(BONUS_OBJS)
-	ar rcs $(NAME) $(OBJS)  $(BONUS_OBJS)
+# Development tools
+norm:
+	@norminette $(SRCS) *.h || true
 
-.PHONY: all clean fclean re bonus
+# Source file information
+info:
+	@echo "Source files:"
+	@for file in $(SRCS); do echo "  $$file"; done
+
+# Non-File Targets
+.PHONY: all clean fclean re debug sanitize banner norm bonus info
+.SILENT: banner

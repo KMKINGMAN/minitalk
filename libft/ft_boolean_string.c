@@ -1,27 +1,48 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strrchr.c                                       :+:      :+:    :+:   */
+/*   ft_boolean_string.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkurkar <mkurkar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/27 23:05:17 by mkurkar           #+#    #+#             */
-/*   Updated: 2024/08/31 20:08:56 by mkurkar          ###   ########.fr       */
+/*   Created: 2024/12/24 12:17:33 by mkurkar           #+#    #+#             */
+/*   Updated: 2024/12/24 12:20:29 by mkurkar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strrchr(const char *s, int c)
+int	ft_isalpha(int c)
 {
-	int	i;
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+		return (1024);
+	return (0);
+}
 
-	i = ft_strlen(s);
-	while (i >= 0)
-	{
-		if ((char)s[i] == (char)c)
-			return ((char *)&s[i]);
-		i--;
-	}
+int	ft_isascii(int c)
+{
+	if (c >= 0 && c <= 127)
+		return (1);
+	return (0);
+}
+
+int	ft_isdigit(int c)
+{
+	if (c >= '0' && c <= '9')
+		return (2048);
+	return (0);
+}
+
+int	ft_isalnum(int c)
+{
+	if (ft_isalpha(c) || ft_isdigit(c))
+		return (8);
+	return (0);
+}
+
+int	ft_isprint(int c)
+{
+	if (c >= 32 && c <= 126)
+		return (16384);
 	return (0);
 }
