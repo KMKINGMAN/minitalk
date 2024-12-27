@@ -6,7 +6,7 @@
 /*   By: mkurkar <mkurkar@student.42amman.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 16:06:52 by mkurkar           #+#    #+#             */
-/*   Updated: 2024/12/20 18:19:49 by mkurkar          ###   ########.fr       */
+/*   Updated: 2024/12/27 16:57:01 by mkurkar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	sig_handler(void)
 
 	sa.sa_handler = &set_sending;
 	sa.sa_flags = 0;
+	sigemptyset(&sa.sa_mask);
 	if (sigaction(SIGUSR1, &sa, NULL) == -1)
 		(write(1, "Error\n", 6));
 	if (sigaction(SIGUSR2, &sa, NULL) == -1)
