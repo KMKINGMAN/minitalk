@@ -24,11 +24,11 @@ SRCEXT				:= c
 DEPEXT				:= d
 OBJEXT				:= o
 
-OBJECTS				:= $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
-OBJECTS_BONUS		:= $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES_BONUS:.$(SRCEXT)=.$(OBJEXT)))
+OBJECTS				:= $(addprefix $(BUILDDIR)/, $(notdir $(SOURCES:.$(SRCEXT)=.$(OBJEXT))))
+OBJECTS_BONUS		:= $(addprefix $(BUILDDIR)/, $(notdir $(SOURCES_BONUS:.$(SRCEXT)=.$(OBJEXT))))
 
-OBJECTS_SERVER		:= $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES_SERVER:.$(SRCEXT)=.$(OBJEXT)))
-OBJECTS_SERVER_BONUS:= $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES_SERVER_BONUS:.$(SRCEXT)=.$(OBJEXT)))
+OBJECTS_SERVER		:= $(addprefix $(BUILDDIR)/, $(notdir $(SOURCES_SERVER:.$(SRCEXT)=.$(OBJEXT))))
+OBJECTS_SERVER_BONUS:= $(addprefix $(BUILDDIR)/, $(notdir $(SOURCES_SERVER_BONUS:.$(SRCEXT)=.$(OBJEXT))))
 
 #Flags, Libraries and Includes
 cflags.release		:= -Wall -Werror -Wextra
@@ -42,8 +42,8 @@ lib.valgrind		:= $(lib.release)
 lib.debug			:= $(lib.release) -fsanitize=address -fno-omit-frame-pointer
 LIB					:= $(lib.$(BUILD))
 
-INC					:= -I$(INCDIR) -I/usr/local/include -Igc_collector
-INCDEP				:= -I$(INCDIR)
+INC					:= -I$(INCDIR) -I/usr/local/include -Igc_collector -Iincludes -Ilibft
+INCDEP				:= -I$(INCDIR) -Igc_collector -Iincludes -Ilibft
 
 # Colors
 C_RESET				:= \033[0m
@@ -68,7 +68,7 @@ all: libft $(TARGETDIR)/$(TARGET) $(TARGETDIR)/$(TARGET_SERVER)
 
 # Bonus rule
 bonus: CFLAGS += -DBONUS
-bonus: libft $(TARGETDIR)/$(TARGET_BONUS)
+bonus: libft $(TARGETDIR)/$(TARGET_BONUS) $(TARGETDIR)/$(TARGET_SERVER_BONUS)
 	@$(ERASE)
 	@$(ECHO) "$(TARGET)\t\t[$(C_SUCCESS)✅$(C_RESET)]"
 	@$(ECHO) "$(C_SUCCESS)All done, compilation successful with bonus! 👌 $(C_RESET)"
@@ -93,42 +93,35 @@ fclean: clean
 # Pull in dependency info for *existing* .o files
 -include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
 
-# Link
+# Link with correct object paths
 $(TARGETDIR)/$(TARGET): $(OBJECTS)
 	@mkdir -p $(TARGETDIR)
 	$(CC) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
 
-# Link Bonus
 $(TARGETDIR)/$(TARGET_BONUS): $(OBJECTS_BONUS)
 	@mkdir -p $(TARGETDIR)
-	$(CC) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
+	$(CC) -o $(TARGETDIR)/$(TARGET_BONUS) $^ $(LIB)
 
-
-# Link the server
 $(TARGETDIR)/$(TARGET_SERVER): $(OBJECTS_SERVER)
 	@mkdir -p $(TARGETDIR)
-	$(CC) -o $(TARGETDIR)/server $^ $(LIB)
+	$(CC) -o $(TARGETDIR)/$(TARGET_SERVER) $^ $(LIB)
 
-#Link the server bonus
 $(TARGETDIR)/$(TARGET_SERVER_BONUS): $(OBJECTS_SERVER_BONUS)
 	@mkdir -p $(TARGETDIR)
-	$(CC) -o $(TARGETDIR)/server-bonus $^ $(LIB)
+	$(CC) -o $(TARGETDIR)/$(TARGET_SERVER_BONUS) $^ $(LIB)
 
 $(BUILDIR):
 	@mkdir -p $@
 
-# Compile
-$(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
+# Ensure object directory exists before compilation
+$(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT) | $(BUILDDIR)
 	@mkdir -p $(dir $@)
 	@$(ECHO) "$(TARGET)\t\t[$(C_PENDING)⏳$(C_RESET)]"
-	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
-	@$(CC) $(CFLAGS) $(INCDEP) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
-	@$(ERASE)
-	@$(ERASE)
-	@cp -f $(BUILDDIR)/$*.$(DEPEXT) $(BUILDDIR)/$*.$(DEPEXT).tmp
-	@sed -e 's|.*:|$(BUILDDIR)/$*.$(OBJEXT):|' < $(BUILDDIR)/$*.$(DEPEXT).tmp > $(BUILDDIR)/$*.$(DEPEXT)
-	@sed -e 's/.*://' -e 's/\\$$//' < $(BUILDDIR)/$*.$(DEPEXT).tmp | fmt -1 | sed -e 's/^ *//' -e 's/$$/:/' >> $(BUILDDIR)/$*.$(DEPEXT)
-	@rm -f $(BUILDDIR)/$*.$(DEPEXT).tmp
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	@$(CC) $(CFLAGS) $(INCDEP) -MM $< -MT '$@' > $(BUILDDIR)/$*.$(DEPEXT)
+
+$(BUILDDIR):
+	@mkdir -p $@
 
 libft:
 	@make -C libft

@@ -6,11 +6,11 @@
 /*   By: mkurkar <mkurkar@student.42amman.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 16:15:59 by mkurkar           #+#    #+#             */
-/*   Updated: 2024/12/22 18:05:24 by mkurkar          ###   ########.fr       */
+/*   Updated: 2025/01/12 12:55:29 by mkurkar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./../includes/minitalk.h"
+#include "minitalk.h"
 
 t_bool	ft_isdigit_string(char *data)
 {
