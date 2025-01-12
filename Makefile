@@ -143,7 +143,7 @@ libft:
 
 
 norm:
-	@$(NORMINETTE) | $(GREP) -v "Not a valid file" | $(GREP) "Error\|Warning" -B 1 || true
+	@$(NORMINETTE) $(SOURCES) $(SOURCES_BONUS) $(SOURCES_SERVER) $(SOURCES_SERVER_BONUS)| $(GREP) -v "Not a valid file" | $(GREP) "Error\|Warning" -B 1 || true
 
 # Non-File Targets
 .PHONY: all re clean fclean norm bonus libft

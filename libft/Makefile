@@ -6,7 +6,7 @@
 #    By: mkurkar <mkurkar@student.42amman.com>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/28 22:42:29 by mkurkar           #+#    #+#              #
-#    Updated: 2025/01/12 18:55:47 by mkurkar          ###   ########.fr        #
+#    Updated: 2025/01/12 19:04:28 by mkurkar          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -114,10 +114,6 @@ fclean: clean
 
 # Rebuild
 re: fclean all
-
-# Development tools
-norm:
-	@norminette $(SRCS) *.h || true
 
 # Source file information
 info:
