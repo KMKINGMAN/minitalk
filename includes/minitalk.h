@@ -6,14 +6,16 @@
 /*   By: mkurkar <mkurkar@student.42amman.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 16:16:36 by mkurkar           #+#    #+#             */
-/*   Updated: 2025/01/12 18:02:34 by mkurkar          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:42:41 by mkurkar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINITALK_H
 # define MINITALK_H
 
-# include "../libft/libft.h"
+# include "libft.h"
+# include "g_collector.h"
+# include "ft_printf.h"
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>

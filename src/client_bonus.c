@@ -6,7 +6,7 @@
 /*   By: mkurkar <mkurkar@student.42amman.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 16:06:52 by mkurkar           #+#    #+#             */
-/*   Updated: 2025/01/12 12:55:24 by mkurkar          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:41:49 by mkurkar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,13 +79,11 @@ int	main(int argc, char **argv)
 	ft_args_checker(argc, argv);
 	pid = ft_atoi(argv[1]);
 	if (pid < 0)
-	{
-		write(1, "Error\n", 6);
-		exit(EXIT_FAILURE);
-	}
+		exit(!!ft_printf("Invalid PID\n"));
 	sig_handler();
 	if (argv[2][0] == '\0')
 		send_message(pid, "\0");
 	send_message(pid, argv[2]);
 	return (0);
 }
+

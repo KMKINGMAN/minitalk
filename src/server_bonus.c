@@ -6,11 +6,10 @@
 /*   By: mkurkar <mkurkar@student.42amman.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 16:07:59 by mkurkar           #+#    #+#             */
-/*   Updated: 2025/01/12 12:55:39 by mkurkar          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:43:05 by mkurkar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "g_collector.h"
 #include "minitalk.h"
 
 void	process_message(t_message **head, t_message **current,
@@ -31,8 +30,7 @@ void	process_message(t_message **head, t_message **current,
 	(*current)->index = (*current)->index + 1;
 	if ((*current)->buff == 0)
 	{
-		write(STDOUT_FILENO, (*current)->message, (*current)->index);
-		write(STDOUT_FILENO, "\n", 1);
+		ft_printf("%s\n", (*current)->message);
 		(*current)->active = 0;
 		remove_message(head, siginfo->si_pid);
 		(*current) = NULL;
@@ -77,9 +75,9 @@ void	sig_handler(void)
 	sa.sa_flags = SA_SIGINFO;
 	sigemptyset(&sa.sa_mask);
 	if (sigaction(SIGUSR1, &sa, NULL) == -1)
-		(write(1, "Error\n", 6));
+		(ft_printf("Error\n"));
 	if (sigaction(SIGUSR2, &sa, NULL) == -1)
-		(write(1, "Error\n", 6));
+		(ft_printf("Error\n"));
 }
 
 int	main(void)
@@ -87,7 +85,7 @@ int	main(void)
 	pid_t	pid;
 
 	pid = getpid();
-	printf("Server PID: %i\n\n", pid);
+	ft_printf("Server PID: %i\n\n", pid);
 	sig_handler();
 	while (1)
 		pause();

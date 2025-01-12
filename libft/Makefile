@@ -6,7 +6,7 @@
 #    By: mkurkar <mkurkar@student.42amman.com>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/28 22:42:29 by mkurkar           #+#    #+#              #
-#    Updated: 2024/12/24 13:43:17 by mkurkar          ###   ########.fr        #
+#    Updated: 2025/01/12 18:55:47 by mkurkar          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,8 @@ SRCS		:= ft_boolean_string.c \
 			   ft_char_converter.c \
 			   ft_memory.c \
 			   ft_split.c \
-			   ft_string_method.c
+			   ft_string_method.c \
+			   ft_printf/ft_main.c ft_printf/src/ft_handlers.c  ft_printf/src/ft_handlers_new.c  ft_printf/src/ft_itoa_base.c  ft_printf/src/ft_print_flags.c  ft_printf/src/ft_strings.c 
 
 # Bonus sources
 BONUS_SRCS	:= ft_lists.c \
@@ -54,6 +55,8 @@ YELLOW		:= \033[33m
 RESET		:= \033[0m
 BOLD		:= \033[1m
 
+INCDEP := -I.
+
 # Default target
 all: banner $(NAME)
 
@@ -61,19 +64,23 @@ all: banner $(NAME)
 banner:
 	@printf "$(BLUE)$(BOLD)Building $(NAME) [$(BUILD) mode]$(RESET)\n"
 
-# Create directories
+# Create directories including nested ones
 $(OBJDIR) $(DEPDIR):
 	@mkdir -p $@
+	@mkdir -p $(OBJDIR)/ft_printf/src
+	@mkdir -p $(DEPDIR)/ft_printf/src
 
-# Dependency generation
+# Dependency generation with directory creation
 $(DEPDIR)/%.d: %.c | $(DEPDIR)
 	@printf "$(YELLOW)Generating dependencies for $<$(RESET)\n"
-	@$(CC) $(CFLAGS) -MM $< -MT '$(OBJDIR)/$*.o' > $@
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) $(INCDEP) -MM $< -MT '$(OBJDIR)/$*.o' > $@
 
-# Compilation with progress indicator
+# Compilation with directory handling
 $(OBJDIR)/%.o: %.c $(DEPDIR)/%.d | $(OBJDIR)
 	@printf "$(YELLOW)Compiling $<$(RESET)\n"
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS)  $(INCDEP) -c $< -o $@
 
 # Library creation with status
 $(NAME): $(OBJS)

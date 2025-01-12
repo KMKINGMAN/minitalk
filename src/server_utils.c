@@ -6,11 +6,10 @@
 /*   By: mkurkar <mkurkar@student.42amman.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 18:03:25 by mkurkar           #+#    #+#             */
-/*   Updated: 2025/01/12 12:55:46 by mkurkar          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:42:55 by mkurkar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "g_collector.h"
 #include "minitalk.h"
 
 t_message	*init(int pid)
