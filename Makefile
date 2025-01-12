@@ -41,7 +41,7 @@ lib.valgrind		:= $(lib.release)
 lib.debug			:= $(lib.release) -fsanitize=address -fno-omit-frame-pointer
 LIB					:= $(lib.$(BUILD))
 
-INC					:= -I$(INCDIR) -I/usr/local/include -Igc_collector
+INC					:= -I$(INCDIR) -I/usr/local/include -Igc_collector -Ilibft
 INCDEP				:= -I$(INCDIR) -Igc_collector -Ilibft
 
 # Colors
