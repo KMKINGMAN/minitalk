@@ -1,5 +1,7 @@
 CC					:= cc
 CXX					:= c++
+
+# check if the OS is Windows
 ifeq ($(shell uname -s),Darwin)
 	CC				:= gcc
 	CXX				:= g++
@@ -13,6 +15,8 @@ TARGET_SERVER_BONUS	:= server_bonus
 
 BUILD				:= release
 
+
+# get the sources for the client and server
 include sources.mk
 
 #The Directories, Source, Includes, Objects, Binary and Resources
@@ -41,6 +45,7 @@ lib.valgrind		:= $(lib.release)
 lib.debug			:= $(lib.release) -fsanitize=address -fno-omit-frame-pointer
 LIB					:= $(lib.$(BUILD))
 
+# Compiler and Linker flags
 INC					:= -I$(INCDIR) -I/usr/local/include -Igc_collector -Ilibft
 INCDEP				:= -I$(INCDIR) -Igc_collector -Ilibft
 
@@ -67,9 +72,10 @@ all: libft $(TARGETDIR)/$(TARGET) $(TARGETDIR)/$(TARGET_SERVER)
 
 # Bonus rule
 bonus: CFLAGS += -DBONUS
-bonus: libft $(TARGETDIR)/$(TARGET_BONUS)
+bonus: libft $(TARGETDIR)/$(TARGET_BONUS) $(TARGETDIR)/$(TARGET_SERVER_BONUS)
 	@$(ERASE)
-	@$(ECHO) "$(TARGET)\t\t[$(C_SUCCESS)✅$(C_RESET)]"
+	@$(ECHO) "$(TARGET_BONUS)\t\t[$(C_SUCCESS)✅$(C_RESET)]"
+	@$(ECHO) "$(TARGET_SERVER_BONUS)\t\t[$(C_SUCCESS)✅$(C_RESET)]"
 	@$(ECHO) "$(C_SUCCESS)All done, compilation successful with bonus! 👌 $(C_RESET)"
 
 # Remake
@@ -90,6 +96,7 @@ fclean: clean
 	@make $@ -C gc_collector
 
 # Pull in dependency info for *existing* .o files
+# we need it to know the dependencies of the object files
 -include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
 
 # Link
@@ -100,18 +107,22 @@ $(TARGETDIR)/$(TARGET): $(OBJECTS)
 # Link Bonus
 $(TARGETDIR)/$(TARGET_BONUS): $(OBJECTS_BONUS)
 	@mkdir -p $(TARGETDIR)
-	$(CC) $(INCDEP) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
+	$(CC) $(INCDEP) -o $(TARGETDIR)/$(TARGET_BONUS) $^ $(LIB)
 
+
+$(TARGETDIR)/$(TARGET_SERVER_BONUS): $(OBJECTS_SERVER_BONUS)
+	@mkdir -p $(TARGETDIR)
+	$(CC) $(INCDEP) -o $(TARGETDIR)/$(TARGET_SERVER_BONUS) $^ $(LIB)
 
 # Link the server
 $(TARGETDIR)/$(TARGET_SERVER): $(OBJECTS_SERVER)
 	@mkdir -p $(TARGETDIR)
 	$(CC) $(INCDEP) -o $(TARGETDIR)/server $^ $(LIB)
 
-#Link the server bonus
-$(TARGETDIR)/$(TARGET_SERVER_BONUS): $(OBJECTS_SERVER_BONUS)
-	@mkdir -p $(TARGETDIR)
-	$(CC) $(INCDEP) -o $(TARGETDIR)/server-bonus $^ $(LIB)
+# #Link the server bonus
+# $(TARGETDIR)/$(TARGET_SERVER_BONUS): $(OBJECTS_SERVER_BONUS)
+# 	@mkdir -p $(TARGETDIR)
+# 	$(CC) $(INCDEP) -o $(TARGETDIR)/server-bonus $^ $(LIB)
 
 $(BUILDIR):
 	@mkdir -p $@
@@ -119,7 +130,7 @@ $(BUILDIR):
 # Compile
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@)
-	@$(ECHO) "$(TARGET)\t\t[$(C_PENDING)⏳$(C_RESET)]"
+	@$(ECHO) "$@\t\t[$(C_PENDING)⏳$(C_RESET)]"
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 	@$(CC) $(CFLAGS) $(INCDEP) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
 	@$(ERASE)
